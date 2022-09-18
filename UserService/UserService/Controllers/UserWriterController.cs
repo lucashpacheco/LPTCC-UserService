@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserService.Model.Commands;
-using UserService.Model.Inputs;
 using UserService.Model.Errors;
+using UserService.Model.Responses.Common;
 using UserService.Service;
-using Microsoft.AspNetCore.Identity;
 
 namespace UserService.Controllers
 {
@@ -28,45 +25,60 @@ namespace UserService.Controllers
 
         [HttpPost]
         [Route("create", Name = "CreateUser")]
-        [ProducesResponseType(200, Type = typeof(NoContentResult))]
-        [ProducesResponseType(400, Type = typeof(GenericError))]
-        [ProducesResponseType(401, Type = typeof(GenericError))]
-        [ProducesResponseType(403, Type = typeof(GenericError))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500, Type = typeof(GenericError))]
-        public Task<string> CreateUser(CreateUserCommand createUserCommand)
+        [ProducesResponseType(200, Type = typeof(ResponseBase<string>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        public async Task<ResponseBase<string>> CreateUser(CreateUserCommand createUserCommand)
         {
-            var user = _createCommandHandler.Create(createUserCommand);
+            var user = await _createCommandHandler.Create(createUserCommand);
 
            return user;
         }
 
         [HttpPost]
-        [Route("login", Name = "Login")]
-        [ProducesResponseType(200, Type = typeof(NoContentResult))]
-        [ProducesResponseType(400, Type = typeof(GenericError))]
-        [ProducesResponseType(401, Type = typeof(GenericError))]
-        [ProducesResponseType(403, Type = typeof(GenericError))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500, Type = typeof(GenericError))]
-        public Task<string> Login(LoginCommand loginCommand)
+        [Route("follow", Name = "Follow")]
+        [ProducesResponseType(200, Type = typeof(ResponseBase<string>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        public async Task<ResponseBase<string>> Follow(FollowCommand followCommand)
         {
-            var login = _createCommandHandler.Login(loginCommand);
+            var user = await _createCommandHandler.Create(followCommand);
+
+            return user;
+        }
+
+        [HttpPost]
+        [Route("login", Name = "Login")]
+        [ProducesResponseType(200, Type = typeof(ResponseBase<string>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        public async Task<ResponseBase<string>> Login(LoginCommand loginCommand)
+        {
+            var login = await _createCommandHandler.Create(loginCommand);
 
             return login;
         }
 
         [HttpPost]
         [Route("refreshtoken", Name = "RefreshToken")]
-        [ProducesResponseType(200, Type = typeof(NoContentResult))]
-        [ProducesResponseType(400, Type = typeof(GenericError))]
-        [ProducesResponseType(401, Type = typeof(GenericError))]
-        [ProducesResponseType(403, Type = typeof(GenericError))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500, Type = typeof(GenericError))]
-        public Task<string> RefreshToken(RefreshTokenCommand refreshTokenCommand)
+        [ProducesResponseType(200, Type = typeof(ResponseBase<string>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        public async Task<ResponseBase<string>> RefreshToken(RefreshTokenCommand refreshTokenCommand)
         {
-            var login = _createCommandHandler.RefreshToken(refreshTokenCommand);
+            var login = await _createCommandHandler.RefreshToken(refreshTokenCommand);
 
             return login;
         }

@@ -21,6 +21,7 @@ namespace UserService.API.Config
                   .AddDefaultTokenProviders();
 
             services.AddScoped<ICommandHandler, CommandHandler>();
+            services.AddScoped<IConsultHandler, ConsultHandler>();
 
             services.AddScoped<IUserRepository, UserRepository>();
 

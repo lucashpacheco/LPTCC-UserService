@@ -1,6 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 using UserService.Model.Commands;
+using UserService.Model.Domain;
+using UserService.Model.Errors;
+using UserService.Model.Responses.Common;
 using UserService.Repository;
 
 namespace UserService.Service
@@ -13,32 +20,79 @@ namespace UserService.Service
         {
             userRepository = _userRepository;
         }
-        public async Task<string> Create(CreateUserCommand createUserCommand)
+        public async Task<ResponseBase<string>> Create(CreateUserCommand createUserCommand)
         {
+            var response = new ResponseBase<string>(success: false, errors: new List<string>(), data: null);
+
             var created = await userRepository.Create(createUserCommand);
 
-            var user = await userRepository.FindByEmail(createUserCommand.Email);
-            if (created.Succeeded)
-                return await userRepository.GenerateJwt(user);
+            var identityUser = await userRepository.FindIdentityUserByEmail(createUserCommand.Email);
+            if (created)
+            {
+                response.Success = true;
+                response.Data = await userRepository.GenerateJwt(identityUser);
+                return response;
+            }
 
-            return created.ToString();
+            var error = new UnauthorizedError();
+            response.Errors.Add($"{error.Code}:{error.Message.ToString()}");
+
+            return response;
+
         }
 
-        public async Task<string> Login(LoginCommand loginCommand)
+        public async Task<ResponseBase<string>> Create(FollowCommand followCommand)
         {
+            var response = new ResponseBase<string>(success: false, errors: new List<string>(), data: null);
+
+            var created = await userRepository.Create(followCommand);
+
+            if (created)
+            {
+                response.Success = true;
+                response.Data = "";
+                return response;
+            }
+
+            var error = new UnauthorizedError();
+            response.Errors.Add($"{error.Code}:{error.Message.ToString()}");
+
+            return response;
+
+        }
+
+        public async Task<ResponseBase<string>> Create(LoginCommand loginCommand)
+        {
+            var response = new ResponseBase<string>(success: true, errors: new List<string>(), data: null);
+
             var logged = await userRepository.Login(loginCommand);
 
             if (logged.Succeeded)
-                return await userRepository.GenerateJwt(await userRepository.FindByEmail(loginCommand.Email));
+            {
+                response.Data = await userRepository.GenerateJwt(await userRepository.FindIdentityUserByEmail(loginCommand.Email));
+                return response;
+            }
 
-            return logged.ToString();    
+            var error = new UnauthorizedError();
+            response.Errors.Add($"{error.Code}:{error.Message.ToString()}");
+
+            return response;
         }
-        
-        public async Task<string> RefreshToken(RefreshTokenCommand refreshTokenCommand)
-        {
-            var refreshed = await userRepository.RefreshToken(refreshTokenCommand.Token);
 
-            return refreshed;    
+        public async Task<ResponseBase<string>> RefreshToken(RefreshTokenCommand refreshTokenCommand)
+        {
+            var response = new ResponseBase<string>(success: true, errors: new List<string>(), data: null);
+
+            var refreshedToken = await userRepository.RefreshToken(refreshTokenCommand.Token);
+
+            if (!string.IsNullOrEmpty(refreshedToken.Data))
+            {
+                response.Data = refreshedToken.Data;
+                return response;
+            }
+
+            response.Errors = refreshedToken.Errors;
+            return response;
         }
     }
 }
