@@ -205,7 +205,7 @@ namespace UserService.Repository
             return result;
         }
 
-        private async Task<User> FindUserById(Guid userId)
+        private async Task<User> FindUserById(Guid? userId)
         {
             User user;
             using (var sqlConnection = new SqlConnection(connectionSql))
@@ -278,7 +278,7 @@ namespace UserService.Repository
             return count;
         }
 
-        private async Task<int> CountFollowedUsers(Guid userId)
+        private async Task<int> CountFollowedUsers(Guid? userId)
         {
             int count;
             using (var sqlConnection = new SqlConnection(connectionSql))

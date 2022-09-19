@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace UserService.Model.Responses.Common
 {
@@ -17,12 +12,12 @@ namespace UserService.Model.Responses.Common
             {
                 return (Page - 1) * PageSize;
             }
-            set
-            {
-                Offset = (Page - 1) * PageSize;
-            }
         }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
         public int Page { get; set; }
+
+        [Range(10, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
         public int PageSize { get; set; }
 
     }
