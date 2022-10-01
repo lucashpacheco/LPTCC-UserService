@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using UserService.Model.Consults;
-using UserService.Model.Domain;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Consults;
+using Peek.Framework.UserService.Domain;
 
 namespace UserService.Service
 {

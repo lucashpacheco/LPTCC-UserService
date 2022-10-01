@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Transactions;
-using Microsoft.AspNetCore.Identity;
-using UserService.Model.Commands;
-using UserService.Model.Domain;
-using UserService.Model.Errors;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Errors;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Commands;
 using UserService.Repository;
 
 namespace UserService.Service

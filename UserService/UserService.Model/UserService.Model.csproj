@@ -8,4 +8,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Peek.Framework">
+	    <HintPath>..\DLLs\Peek.Framework.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 </Project>

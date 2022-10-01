@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using UserService.Model.Consults;
-using UserService.Model.Domain;
-using UserService.Model.Errors;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Consults;
+using Peek.Framework.UserService.Domain;
 using UserService.Service;
 
 namespace UserService.Controllers
@@ -18,7 +17,7 @@ namespace UserService.Controllers
         private readonly ILogger<UserReaderController> _logger;
         private readonly IConsultHandler _consultHandler;
 
-        public UserReaderController(ILogger<UserReaderController> logger,IConsultHandler consultHandler)
+        public UserReaderController(ILogger<UserReaderController> logger, IConsultHandler consultHandler)
         {
             _logger = logger;
             _consultHandler = consultHandler;
@@ -27,11 +26,11 @@ namespace UserService.Controllers
         [HttpGet]
         [Route("getuser/{UserId}", Name = "Get User")]
         [ProducesResponseType(200, Type = typeof(ResponseBase<User>))]
-        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
-        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
-        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
-        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
-        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedResult>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbidResult>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundResult>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<ApplicationException>))]
         public Task<ResponseBase<User>> GetUser([FromRoute] GetUserByIdRequest getUserByIdRequest)
         {
             var user = _consultHandler.Get(getUserByIdRequest);
@@ -41,12 +40,12 @@ namespace UserService.Controllers
         [HttpGet]
         [Route("getusers", Name = "Get Users")]
         [ProducesResponseType(200, Type = typeof(ResponseBase<PagedResult<User>>))]
-        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
-        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
-        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
-        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
-        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
-        public Task<ResponseBase<PagedResult<User>>> GetUsers([FromQuery]GetUsersRequest getUsersRequest)
+        [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedResult>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbidResult>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundResult>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<ApplicationException>))]
+        public Task<ResponseBase<PagedResult<User>>> GetUsers([FromQuery] GetUsersRequest getUsersRequest)
         {
             var user = _consultHandler.Get(getUsersRequest);
             return user;
@@ -55,11 +54,11 @@ namespace UserService.Controllers
         [HttpGet]
         [Route("getfollowedusers", Name = "Get Followed Users")]
         [ProducesResponseType(200, Type = typeof(ResponseBase<PagedResult<User>>))]
-        [ProducesResponseType(400, Type = typeof(ResponseBase<GenericError>))]
-        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedError>))]
-        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbiddenError>))]
-        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundError>))]
-        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedResult>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbidResult>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundResult>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<ApplicationException>))]
         public Task<ResponseBase<PagedResult<User>>> GetFollowedUsers([FromQuery] GetFollowedUsersRequest getUsersRequest)
         {
             var user = _consultHandler.Get(getUsersRequest);

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using UserService.Model.Commands;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Commands;
 
 namespace UserService.Service
 {

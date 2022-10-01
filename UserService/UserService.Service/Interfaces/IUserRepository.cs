@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using UserService.Model.Commands;
-using UserService.Model.Consults;
-using UserService.Model.Domain;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Commands;
+using Peek.Framework.UserService.Consults;
+using Peek.Framework.UserService.Domain;
 
 namespace UserService.Repository
 {
