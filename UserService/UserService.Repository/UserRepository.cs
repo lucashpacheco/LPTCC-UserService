@@ -6,19 +6,17 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using Dapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using UserService.Model.Commands;
-using UserService.Model.Consults;
-using UserService.Model.Domain;
-using UserService.Model.Errors;
-using UserService.Model.Responses.Common;
+using Peek.Framework.Common.Errors;
+using Peek.Framework.Common.Responses;
+using Peek.Framework.UserService.Commands;
+using Peek.Framework.UserService.Consults;
+using Peek.Framework.UserService.Domain;
 using UserService.Repository.Queries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UserService.Repository
 {
@@ -86,7 +84,7 @@ namespace UserService.Repository
         {
             var result = await userManager.FindByEmailAsync(email);
             return result;
-        }      
+        }
 
         public async Task<User> FindById(GetUserByIdRequest user)
         {
@@ -193,7 +191,7 @@ namespace UserService.Repository
             catch (Exception ex)
             {
                 var error = new UnauthorizedError();
-                response.Errors.Add($"{error.Code}:{error.Message.ToString()}");
+                response.Errors.Add($"{error.Code}:{error.Message.ToString()}-{error.Level}");
                 return response;
             }
         }
@@ -217,7 +215,7 @@ namespace UserService.Repository
                     Id = userId.ToString()
                 };
 
-                user = await sqlConnection.QueryFirstAsync<User>(UserQueries.Consults.FindUserById , parameters);
+                user = await sqlConnection.QueryFirstAsync<User>(UserQueries.Consults.FindUserById, parameters);
 
                 sqlConnection.Close();
             }
@@ -230,13 +228,14 @@ namespace UserService.Repository
             using (var sqlConnection = new SqlConnection(connectionSql))
             {
                 sqlConnection.Open();
-                
-                var parameters = new { 
-                    Offset = filters.PageInformation.Offset ,
+
+                var parameters = new
+                {
+                    Offset = filters.PageInformation.Offset,
                     PageSize = filters.PageInformation.PageSize
                 };
 
-                users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsers , parameters);
+                users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsers, parameters);
 
                 sqlConnection.Close();
             }
@@ -290,7 +289,7 @@ namespace UserService.Repository
                     Id = userId.ToString(),
                 };
 
-                count = await sqlConnection.QueryFirstAsync<int>(UserQueries.Consults.CountFollowedUsers , parameters);
+                count = await sqlConnection.QueryFirstAsync<int>(UserQueries.Consults.CountFollowedUsers, parameters);
 
                 sqlConnection.Close();
             }
