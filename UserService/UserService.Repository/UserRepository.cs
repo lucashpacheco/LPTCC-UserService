@@ -44,7 +44,7 @@ namespace UserService.Repository
                 UserName = createUserCommand.Email
             };
 
-            var user = new User(identityUser.Id, createUserCommand.Name, identityUser.Email);
+            var user = new User(identityUser.Id, createUserCommand.Name, identityUser.Email, createUserCommand.BirthDate, createUserCommand.ProfilePhoto);
 
             var identityResult = await userManager.CreateAsync(identityUser, createUserCommand.Password);
 
@@ -229,13 +229,27 @@ namespace UserService.Repository
             {
                 sqlConnection.Open();
 
-                var parameters = new
+                if (filters.UsersIds != null && filters.UsersIds.Any())
                 {
-                    Offset = filters.PageInformation.Offset,
-                    PageSize = filters.PageInformation.PageSize
-                };
+                    var parameters = new
+                    {
+                        Offset = filters.PageInformation.Offset,
+                        PageSize = filters.PageInformation.PageSize,
+                        Ids = filters.UsersIds.ToArray()
+                    };
 
-                users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsers, parameters);
+                    users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsersBatch, parameters);
+                }
+                else
+                {
+                    var parameters = new
+                    {
+                        Offset = filters.PageInformation.Offset,
+                        PageSize = filters.PageInformation.PageSize
+                    };
+
+                    users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsers, parameters);
+                }
 
                 sqlConnection.Close();
             }
@@ -309,6 +323,8 @@ namespace UserService.Repository
                         command.CommandText = UserQueries.Commands.CreateUserCommand;
                         command.Parameters.Add(new SqlParameter("@Id", user.Id));
                         command.Parameters.Add(new SqlParameter("@Name", user.Name));
+                        command.Parameters.Add(new SqlParameter("@Birthdate", user.BirthDate));
+                        command.Parameters.Add(new SqlParameter("@ProfilePhoto", user.ProfilePhoto));
 
                         rowsAffected = await command.ExecuteNonQueryAsync();
                     }

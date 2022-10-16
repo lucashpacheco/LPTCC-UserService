@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UserService.Repository.Queries
+﻿namespace UserService.Repository.Queries
 {
     public static class UserQueries
     {
@@ -13,11 +7,15 @@ namespace UserService.Repository.Queries
             public const string CreateUserCommand =
                  @"INSERT INTO Users (
                                 Id, 
-                                Name                                        
+                                Name,
+                                Birthdate,
+                                ProfilePhoto
                                 )
                          VALUES (
                                 @Id, 
-                                @Name
+                                @Name,
+                                @Birthdate,
+                                @ProfilePhoto
                                 );";
 
             public const string FollowCommand =
@@ -36,17 +34,27 @@ namespace UserService.Repository.Queries
         public static class Consults
         {
             public const string FindUserById =
-                 @"SELECT DISTINCT au.Id, u.Name , au.Email 
+                 @"SELECT DISTINCT au.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
                     FROM Users u
                     LEFT JOIN AspNetUsers au ON au.Id = u.Id 
                     WHERE au.Id = @Id
                     ;";
 
             public const string FindUsers =
-                 @"SELECT DISTINCT au.Id, u.Name , au.Email 
+                 @"SELECT DISTINCT au.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
                     FROM Users u
                     LEFT JOIN AspNetUsers au ON au.Id = u.Id
                     WHERE u.Id IS NOT NULL
+                    ORDER BY u.CreatedDate DESC
+                    OFFSET @Offset ROWS
+                    FETCH NEXT @PageSize ROWS ONLY
+                    ;";
+
+            public const string FindUsersBatch =
+                 @"SELECT DISTINCT au.Id, u.Name , au.Email 
+                    FROM Users u
+                    LEFT JOIN AspNetUsers au ON au.Id = u.Id
+                    WHERE u.Id in @Ids
                     ORDER BY u.Name
                     OFFSET @Offset ROWS
                     FETCH NEXT @PageSize ROWS ONLY
@@ -67,7 +75,7 @@ namespace UserService.Repository.Queries
                  @"SELECT COUNT(Id) 
                     FROM Users u
                     ;";
-            
+
             public const string CountFollowedUsers =
                  @"SELECT DISTINCT COUNT(u.Id)
                     FROM Follows f
