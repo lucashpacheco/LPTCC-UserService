@@ -54,6 +54,21 @@ namespace UserService.Controllers
         }
 
         [HttpPost]
+        [Route("unfollow", Name = "Unfollow")]
+        [ProducesResponseType(200, Type = typeof(ActionResult))]
+        [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]
+        [ProducesResponseType(401, Type = typeof(ResponseBase<UnauthorizedResult>))]
+        [ProducesResponseType(403, Type = typeof(ResponseBase<ForbidResult>))]
+        [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundResult>))]
+        [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
+        public async Task<ActionResult> Follow(UnfollowCommand followCommand)
+        {
+            var user = await _createCommandHandler.Delete(followCommand);
+
+            return CustomResponse(user);
+        }
+
+        [HttpPost]
         [Route("login", Name = "Login")]
         [ProducesResponseType(200, Type = typeof(ActionResult))]
         [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]

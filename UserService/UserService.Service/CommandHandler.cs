@@ -56,6 +56,26 @@ namespace UserService.Service
 
         }
 
+        public async Task<ResponseBase<string>> Delete(UnfollowCommand unfollowCommand)
+        {
+            var response = new ResponseBase<string>(success: false, errors: new List<string>(), data: null);
+
+            var deleted = await userRepository.Delete(unfollowCommand);
+
+            if (deleted)
+            {
+                response.Success = true;
+                response.Data = "";
+                return response;
+            }
+
+            var error = new UnauthorizedError();
+            response.Errors.Add($"{error.Code}:{error.Message.ToString()}");
+
+            return response;
+
+        }
+
         public async Task<ResponseBase<string>> Create(LoginCommand loginCommand)
         {
             var response = new ResponseBase<string>(success: true, errors: new List<string>(), data: null);

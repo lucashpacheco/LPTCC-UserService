@@ -8,6 +8,7 @@ namespace UserService.Service
     {
         Task<ResponseBase<string>> Create(CreateUserCommand createUserCommand);
         Task<ResponseBase<string>> Create(FollowCommand createUserCommand);
+        Task<ResponseBase<string>> Delete(UnfollowCommand unfollowCommand);
         Task<ResponseBase<string>> Create(LoginCommand createUserCommand);
         Task<ResponseBase<string>> RefreshToken(RefreshTokenCommand refreshTokenCommand);
     }

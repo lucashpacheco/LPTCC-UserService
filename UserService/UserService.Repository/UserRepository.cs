@@ -70,6 +70,12 @@ namespace UserService.Repository
             return await CreateAsync(followCommand);
         }
 
+        public async Task<bool> Delete(UnfollowCommand followCommand)
+        {
+
+            return await DeleteAsync(followCommand);
+        }
+
         public async Task<SignInResult> Login(LoginCommand loginCommand)
         {
             var result = await signInManager.PasswordSignInAsync(loginCommand.Email, loginCommand.Password, false, false);
@@ -229,7 +235,7 @@ namespace UserService.Repository
             {
                 sqlConnection.Open();
 
-                if (filters.UsersIds != null && filters.UsersIds.Any())
+                if (filters.UsersIds != null && filters.UsersIds.Count > 1)
                 {
                     var parameters = new
                     {
@@ -354,6 +360,34 @@ namespace UserService.Repository
                         command.Parameters.Add(new SqlParameter("@UserId", followCommand.UserId.ToString()));
                         command.Parameters.Add(new SqlParameter("@FollowedUserId", followCommand.FollowedUserId.ToString()));
                         command.Parameters.Add(new SqlParameter("@CreatedDate", DateTime.UtcNow));
+
+                        rowsAffected = await command.ExecuteNonQueryAsync();
+                    }
+                    sqlConnection.Close();
+                }
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        private async Task<bool> DeleteAsync(UnfollowCommand followCommand)
+        {
+            try
+            {
+                int rowsAffected = 0;
+                using (var sqlConnection = new SqlConnection(connectionSql))
+                {
+                    sqlConnection.Open();
+                    using (var command = sqlConnection.CreateCommand())
+                    {
+                        command.CommandText = UserQueries.Commands.UnfollowCommand;
+                        command.Parameters.Add(new SqlParameter("@UserId", followCommand.UserId.ToString()));
+                        command.Parameters.Add(new SqlParameter("@FollowedUserId", followCommand.FollowedUserId.ToString()));
 
                         rowsAffected = await command.ExecuteNonQueryAsync();
                     }

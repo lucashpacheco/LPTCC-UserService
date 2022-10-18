@@ -27,5 +27,7 @@ namespace UserService.Repository
 
         Task<ResponseBase<string>> RefreshToken(string authToken);
 
+        Task<bool> Delete(UnfollowCommand followCommand);
+
     }
 }

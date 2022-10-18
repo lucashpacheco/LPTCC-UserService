@@ -29,6 +29,12 @@
                                 @FollowedUserId,
                                 @CreatedDate
                                 );";
+
+            public const string UnfollowCommand =
+                    @"DELETE FROM Follows WHERE 
+                                UserId =  @UserId and
+                                FollowedUserId = @FollowedUserId
+                                ;";
         }
 
         public static class Consults
@@ -51,7 +57,7 @@
                     ;";
 
             public const string FindUsersBatch =
-                 @"SELECT DISTINCT au.Id, u.Name , au.Email 
+                 @"SELECT DISTINCT au.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
                     FROM Users u
                     LEFT JOIN AspNetUsers au ON au.Id = u.Id
                     WHERE u.Id in @Ids
@@ -61,7 +67,7 @@
                     ;";
 
             public const string FindFollowedUsers =
-                 @"SELECT DISTINCT u.Id, u.Name , au.Email
+                 @"SELECT DISTINCT u.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
                     FROM Follows f
                     RIGHT JOIN Users u ON u.Id = f.FollowedUserId  
                     LEFT JOIN AspNetUsers au ON au.Id = f.FollowedUserId 
