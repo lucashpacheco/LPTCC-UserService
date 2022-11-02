@@ -17,12 +17,18 @@ using Peek.Framework.UserService.Commands;
 using Peek.Framework.UserService.Consults;
 using Peek.Framework.UserService.Domain;
 using UserService.Repository.Queries;
+using Azure.Storage.Blobs;
+using System.IO;
+using System.Buffers.Text;
+using static System.Net.Mime.MediaTypeNames;
+using Azure.Storage.Blobs.Models;
 
 namespace UserService.Repository
 {
     public class UserRepository : IUserRepository
     {
         private string connectionSql;
+        private string connectionBlob;
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
 
@@ -31,7 +37,7 @@ namespace UserService.Repository
             userManager = _userManager;
             signInManager = _signInManager;
             connectionSql = _config.GetConnectionString("cnSql");
-
+            connectionBlob = _config.GetConnectionString("cnBlob");
         }
 
         #region Commands
@@ -52,6 +58,35 @@ namespace UserService.Repository
             {
                 return identityResult.Succeeded;
             }
+
+            try
+            {
+                var azureContainer = new BlobContainerClient(connectionBlob, "profilephotos");
+                var blob = azureContainer.GetBlobClient($"{identityUser.Id}.jpg");
+
+                byte[] bytes = Convert.FromBase64String(createUserCommand.ProfilePhoto.Substring(createUserCommand.ProfilePhoto.LastIndexOf(',') + 1));
+
+                using (MemoryStream ms = new MemoryStream(bytes))
+                {
+                    //var stream = new MemoryStream(Encoding.UTF8.GetBytes(createUserCommand.ProfilePhoto));
+                    var blobHttpHeader = new BlobHttpHeaders();
+
+                    blobHttpHeader.ContentType = "image/jpg";
+                    var blobResult = await blob.UploadAsync(ms , blobHttpHeader);
+                    var test = blobResult.Value;
+                }
+
+                createUserCommand.ProfilePhoto = $"https://picturesblob.blob.core.windows.net/profilephotos/{identityUser.Id}.jpg";
+
+
+            }
+            catch (Exception)
+            {
+                await userManager.DeleteAsync(identityUser);
+
+            }
+            //TODO: Save image in blob storage and set the url in user object
+
 
             var result = await CreateAsync(user);
 
