@@ -59,6 +59,7 @@ namespace UserService.Repository
                 return identityResult.Succeeded;
             }
 
+            //TODO: Move this logic
             try
             {
                 var azureContainer = new BlobContainerClient(connectionBlob, "profilephotos");
@@ -68,7 +69,6 @@ namespace UserService.Repository
 
                 using (MemoryStream ms = new MemoryStream(bytes))
                 {
-                    //var stream = new MemoryStream(Encoding.UTF8.GetBytes(createUserCommand.ProfilePhoto));
                     var blobHttpHeader = new BlobHttpHeaders();
 
                     blobHttpHeader.ContentType = "image/jpg";
@@ -85,7 +85,7 @@ namespace UserService.Repository
                 await userManager.DeleteAsync(identityUser);
 
             }
-            //TODO: Save image in blob storage and set the url in user object
+            
 
 
             var result = await CreateAsync(user);
