@@ -83,7 +83,7 @@ namespace UserService.Repository
             catch (Exception)
             {
                 await userManager.DeleteAsync(identityUser);
-
+                throw;
             }
             
 
