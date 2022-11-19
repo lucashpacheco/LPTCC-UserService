@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://lptccapi.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8376e914e51d450a98c8231b8a1c42a0 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_9226d09a0d184c55b61520cc0e0c7174 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_e7fe3ee8a2a440ae8fe5580e9f9afa87 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_8e978f0095024a289f05e2a830f22167 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: lptccapi.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8376e914e51d450a98c8231b8a1c42a0 }}/userserviceapi:${{ github.sha }}
+        tags: lptccapi.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e7fe3ee8a2a440ae8fe5580e9f9afa87 }}/lptccapi/userserviceapi:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'lptcc-peek-usersv'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1f9a05c3bd354fb1837092829aabacb4 }}
-        images: 'lptccapi.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8376e914e51d450a98c8231b8a1c42a0 }}/userserviceapi:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_072d0a5e5d594753bf3026ffc36d27e8 }}
+        images: 'lptccapi.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e7fe3ee8a2a440ae8fe5580e9f9afa87 }}/lptccapi/userserviceapi:${{ github.sha }}'
