@@ -57,11 +57,11 @@
                     ;";
 
             public const string FindUsersBatch =
-                 @"SELECT DISTINCT au.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
+                 @"SELECT au.Id, u.Name , au.Email , u.Birthdate , u.ProfilePhoto , u.CreatedDate
                     FROM Users u
                     LEFT JOIN AspNetUsers au ON au.Id = u.Id
                     WHERE u.Id in @Ids
-                    ORDER BY u.Name
+                    ORDER BY u.CreatedDate DESC
                     OFFSET @Offset ROWS
                     FETCH NEXT @PageSize ROWS ONLY
                     ;";

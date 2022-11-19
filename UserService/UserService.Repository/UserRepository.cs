@@ -276,7 +276,7 @@ namespace UserService.Repository
                     {
                         Offset = filters.PageInformation.Offset,
                         PageSize = filters.PageInformation.PageSize,
-                        Ids = filters.UsersIds.ToArray()
+                        Ids = filters.UsersIds.ToList()
                     };
 
                     users = await sqlConnection.QueryAsync<User>(UserQueries.Consults.FindUsersBatch, parameters);

@@ -37,7 +37,7 @@ namespace UserService.Controllers
             return CustomResponse(user);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getusers", Name = "Get Users")]
         [ProducesResponseType(200, Type = typeof(ActionResult))]
         [ProducesResponseType(400, Type = typeof(ResponseBase<BadRequestResult>))]
@@ -45,7 +45,7 @@ namespace UserService.Controllers
         [ProducesResponseType(403, Type = typeof(ResponseBase<ForbidResult>))]
         [ProducesResponseType(404, Type = typeof(ResponseBase<NotFoundResult>))]
         [ProducesResponseType(500, Type = typeof(ResponseBase<GenericError>))]
-        public async Task<ActionResult> GetUsers([FromQuery] GetUsersRequest getUsersRequest)
+        public async Task<ActionResult> GetUsers([FromBody] GetUsersRequest getUsersRequest)
         {
             var user = await _consultHandler.Get(getUsersRequest);
             return CustomResponse(user);
